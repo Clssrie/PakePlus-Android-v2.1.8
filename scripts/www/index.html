@@ -1,11 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        PakePlus
-    </body>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日喝水3L提醒</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial;margin:0;padding:15px;background:#f5f5f5}
+.container{max-width:400px;margin:0 auto;background:white;padding:20px;border-radius:12px}
+h1{text-align:center;color:#2d8cf0}
+.item{margin:12px 0}
+button{width:100%;padding:12px;background:#2d8cf0;color:white;border:none;border-radius:8px;font-size:16px}
+input{width:100%;padding:10px;font-size:16px;border:1px solid #ddd;border-radius:8px}
+.info{background:#e8f4ff;padding:10px;border-radius:8px;margin:10px 0}
+.log{margin-top:20px;max-height:250px;overflow-y:auto}
+.log-item{padding:8px;border-bottom:1px solid #eee}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>💧 每日喝水3L提醒</h1>
+
+<div class="info">
+目标：3000ml<br>
+已喝：<span id="total">0</span> ml<br>
+剩余：<span id="remain">3000</span> ml<br>
+次数：<span id="times">0</span> 次<br>
+提醒：每 1 小时一次
+</div>
+
+<div class="item">
+<input type="number" id="drink" placeholder="本次喝水量（ml）" value="250">
+</div>
+<div class="item">
+<button onclick="addDrink()">记录喝水</button>
+</div>
+
+<div class="log" id="log"></div>
+</div>
+
+<script>
+let total = 0;
+let times = 0;
+const goal = 3000;
+
+function $(id){return document.getElementById(id)}
+
+function addDrink(){
+    let val = parseInt($('drink').value)||0;
+    if(val<=0) return alert("请输入有效水量");
+    total += val;
+    times += 1;
+    let now = new Date();
+    let time = now.toLocaleTimeString();
+    showLog(time, val);
+    update();
+}
+
+function update(){
+    $('total').innerText = total;
+    $('remain').innerText = Math.max(goal-total,0);
+    $('times').innerText = times;
+    if(total>=goal) alert("🎉 今天3L喝水目标完成！");
+}
+
+function showLog(t, v){
+    let div = document.createElement('div');
+    div.className='log-item';
+    div.innerText = `${t} · 喝了 ${v} ml`;
+    $('log').prepend(div);
+}
+
+// 每小时提醒
+function remind(){
+    if(total < goal) alert("💧 该喝水啦！");
+}
+setInterval(remind, 3600000);
+alert("✅ 喝水提醒已开启！");
+</script>
+</body>
 </html>
